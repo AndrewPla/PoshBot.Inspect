@@ -2,7 +2,7 @@
 
 PoshBot plugin to return the definition of functions.
 
-This module contains 1 command named inspect
+This module contains 1 command named `Inspect-Command` with an alias of `inspect`.
 
 ## Install Module
 
