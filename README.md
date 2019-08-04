@@ -20,6 +20,10 @@ To install the plugin from within PoshBot:
 
 ## Example
 
-`!Inspect` will get the definition of a command and return it.
+### Slack
 
-![Inspect a command](example.png)
+![Inspect a command](SlackExample.png)
+
+### Teams
+
+~[Inspect in Teams](TeamsExample.png)
