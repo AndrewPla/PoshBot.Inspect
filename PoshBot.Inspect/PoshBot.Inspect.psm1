@@ -7,8 +7,8 @@ function Inspect-Command {
 .PARAMETER Name
     Name of the command that you would like to see the code for.
 .EXAMPLE
-    !Inspect
-    Explanation of what the example does
+    !Inspect Slap
+    Returns the definition of the Slap function.
 #>
     [PoshBot.BotCommand(
         Aliases = ('Inspect')
@@ -21,7 +21,7 @@ function Inspect-Command {
     )
 
     Try { $command = Get-Command $Name -ErrorAction Stop }
-    Catch { Write-Error "Unable to find a command matching $command" }
+    Catch { Write-Error "Unable to find a command matching $Name" -ErrorAction Stop }
 
     switch ($command.CommandType) {
 
@@ -30,7 +30,7 @@ function Inspect-Command {
                 $functionText = $command.ResolvedCommand
             }
             else {
-                Write-Error "$($command.ResolvedCommand.CommandType) not supported. Please supply a function or an alias of a function"
+                Write-Error "$($command.ResolvedCommand.CommandType) not supported. Please supply a function or an alias of a function" -ErrorAction Stop
             }
         }
 
@@ -39,7 +39,7 @@ function Inspect-Command {
         }
 
         default {
-            Write-Error "$($command.CommandType) not supported. Please supply a function or an alias of a function"
+            Write-Error "$($command.CommandType) not supported. Please supply a function or an alias of a function" -ErrorAction Stop
         }
     }
 
