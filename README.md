@@ -26,4 +26,4 @@ To install the plugin from within PoshBot:
 
 ### Teams
 
-~[Inspect in Teams](TeamsExample.png)
+![Inspect in Teams](TeamsExample.png)
