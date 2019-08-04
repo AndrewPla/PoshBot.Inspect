@@ -18,7 +18,7 @@ To install the plugin from within PoshBot:
 
 `!install-plugin -name poshbot.inspect`
 
-## What does it do?
+## Example
 
 `!Inspect` will get the definition of a command and return it.
 
