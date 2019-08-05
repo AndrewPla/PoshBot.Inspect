@@ -23,7 +23,14 @@ function Inspect-Command {
     )
 
     Try { $command = Get-Command $Name -ErrorAction Stop }
-    Catch { throw "Unable to find a command matching $Name" }
+    Catch {
+        $errorParams = @{
+            Type = 'Error'
+            Text = "Unable to find a command matching $Name"
+        }
+        New-PoshbotCardResponse @errorParams
+    }
+
 
     switch ($command.CommandType) {
 
@@ -32,7 +39,12 @@ function Inspect-Command {
                 $functionText = $command.ResolvedCommand
             }
             else {
-                throw "$($command.ResolvedCommand.CommandType) not supported. Please supply a function or an alias of a function"
+                $errorParams = @{
+                    Type = 'Error'
+                    Text = "$($command.ResolvedCommand.CommandType) not supported.
+                    Please supply a function or an alias of a function"
+                }
+                New-PoshbotCardResponse @errorParams
             }
         }
 
@@ -41,7 +53,12 @@ function Inspect-Command {
         }
 
         default {
-            throw "$($command.CommandType) not supported. Please supply a function or an alias of a function"
+            "$($command.ResolvedCommand.CommandType) not supported. Please supply a function or an alias of a function"
+            $errorParams = @{
+                Type = 'Error'
+                Text = "$Name not found. Please supply a function or an alias of a function"
+            }
+            New-PoshbotCardResponse @errorParams
         }
     }
 
