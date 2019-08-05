@@ -5,7 +5,7 @@ function Inspect-Command {
 .DESCRIPTION
     This command will return the code of a function.
 .PARAMETER Name
-    Name of the command that you would like to see the code for.
+   Full name of a command that you want to return the code for.
 .EXAMPLE
     !Inspect Slap
     Returns the definition of the Slap function.
@@ -22,45 +22,44 @@ function Inspect-Command {
         $Name
     )
 
-    Try { $command = Get-Command $Name -ErrorAction Stop }
-    Catch {
-        $errorParams = @{
-            Type = 'Error'
-            Text = "Unable to find a command matching $Name"
-        }
-        New-PoshbotCardResponse @errorParams
-    }
+    $command = Get-Command $Name -ErrorAction SilentlyContinue
 
+    if ($Command) {
 
-    switch ($command.CommandType) {
+        switch ($command.CommandType) {
 
-        'Alias' {
-            if ($command.ResolvedCommand.commandType -eq 'Function') {
-                $functionText = $command.ResolvedCommand
+            'Alias' {
+                if ($command.ResolvedCommand.commandType -eq 'Function') {
+                    $functionText = $command.ResolvedCommand
+                }
+                else {
+                    $errorParams = @{
+                        Type = 'Error'
+                        Text = "Unable to find a command matching [$Name]. Please provide the full name of a command, no alias."
+                    }
+                    New-PoshbotCardResponse @errorParams
+                }
             }
-            else {
+            'Function' {
+                $functionText = $command.Definition
+            }
+
+            default {
                 $errorParams = @{
                     Type = 'Error'
-                    Text = "$($command.ResolvedCommand.CommandType) not supported.
-                    Please supply a function or an alias of a function"
+                    Text = "Unable to find a command matching [$Name]. Please provide the full name of a command, no alias."
                 }
                 New-PoshbotCardResponse @errorParams
             }
         }
 
-        'Function' {
-            $functionText = $command.Definition
-        }
-
-        default {
-            "$($command.ResolvedCommand.CommandType) not supported. Please supply a function or an alias of a function"
-            $errorParams = @{
-                Type = 'Error'
-                Text = "$Name not found. Please supply a function or an alias of a function"
-            }
-            New-PoshbotCardResponse @errorParams
-        }
+        New-PoshBotTextResponse -Text $functionText -AsCode
     }
-
-    New-PoshBotTextResponse -Text $functionText -AsCode
+    else {
+        $errorParams = @{
+            Type = 'Error'
+            Text = "Unable to find a command matching [$Name]. Please provide the full name of a command, no alias."
+        }
+        New-PoshbotCardResponse @errorParams
+    }
 }
