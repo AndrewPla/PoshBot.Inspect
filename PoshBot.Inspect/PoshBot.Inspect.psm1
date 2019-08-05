@@ -15,13 +15,15 @@ function Inspect-Command {
     )]
     [CmdletBinding()]
     param(
-        [Parameter(position = 0)]
+        [Parameter(
+            position = 0,
+            Mandatory)]
         [String]
         $Name
     )
 
     Try { $command = Get-Command $Name -ErrorAction Stop }
-    Catch { Write-Error "Unable to find a command matching $Name" -ErrorAction Stop }
+    Catch { throw "Unable to find a command matching $Name" }
 
     switch ($command.CommandType) {
 
@@ -30,7 +32,7 @@ function Inspect-Command {
                 $functionText = $command.ResolvedCommand
             }
             else {
-                Write-Error "$($command.ResolvedCommand.CommandType) not supported. Please supply a function or an alias of a function" -ErrorAction Stop
+                throw "$($command.ResolvedCommand.CommandType) not supported. Please supply a function or an alias of a function"
             }
         }
 
@@ -39,9 +41,9 @@ function Inspect-Command {
         }
 
         default {
-            Write-Error "$($command.CommandType) not supported. Please supply a function or an alias of a function" -ErrorAction Stop
+            throw "$($command.CommandType) not supported. Please supply a function or an alias of a function"
         }
     }
 
-    New-PoshBotTextResponse -text $functionText -AsCode
+    New-PoshBotTextResponse -Text $functionText -AsCode
 }
